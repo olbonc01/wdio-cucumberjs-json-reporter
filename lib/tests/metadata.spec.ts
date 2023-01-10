@@ -13,7 +13,7 @@ import WebDriver from 'webdriver';
 import { cjson_metadata } from '../models';
 
 interface Global {
-    browser: Browser<'sync'>;
+    browser?: Browser<'sync'>;
 }
 declare const global: Global;
 
@@ -213,8 +213,9 @@ describe( 'metadata', () => {
                 metadataClassObject.determinePlatformVersion(
                     {
                         platform: {
-                            version: undefined,
-                        },
+                            name: '',
+                            version: ''
+                        }
                     } as cjson_metadata,
                     { platformVersion: '10.1' } as WebDriver.DesiredCapabilities,
                 ),
@@ -231,7 +232,7 @@ describe( 'metadata', () => {
         let determineBrowserDataSpy: jest.SpyInstance;
         let determineDeviceNameSpy: jest.SpyInstance;
         let determinePlatformNameSpy: jest.SpyInstance;
-        let determinePlatformVersionSpy;
+        let determinePlatformVersionSpy: jest.SpyInstance;
         const appMockData = {
             app: {
                 name: 'mock-appName',
@@ -293,9 +294,11 @@ describe( 'metadata', () => {
         } );
 
         it( "should return app metadata based on the current.config.capabilities['cjson:metadata'].app", () => {
-            ( FULL_RUNNER_STATS.capabilities as W3CCapabilitiesExtended ).cjson_metadata.app = {
-                name: 'mock-appName',
-                version: 'mock-appVersion',
+            ( FULL_RUNNER_STATS.capabilities as W3CCapabilitiesExtended ).cjson_metadata = {
+                app: {
+                    name: 'mock-appName',
+                    version: 'mock-appVersion'
+                }
             };
 
             determineAppDataSpy = jest.spyOn( metadataClassObject, 'determineAppData' ).mockReturnValue( appMockData );
@@ -307,7 +310,7 @@ describe( 'metadata', () => {
             expect( determinePlatformNameSpy ).toHaveBeenCalledTimes( 1 );
             expect( determinePlatformVersionSpy ).toHaveBeenCalledTimes( 1 );
 
-            delete ( FULL_RUNNER_STATS.capabilities as W3CCapabilitiesExtended ).cjson_metadata.app;
+            delete ( FULL_RUNNER_STATS.capabilities as W3CCapabilitiesExtended ).cjson_metadata?.app;
             determineAppDataSpy.mockClear();
         } );
 

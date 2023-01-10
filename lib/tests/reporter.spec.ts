@@ -22,7 +22,7 @@ import { fileExists } from './fileExists';
 import path from 'path';
 
 describe('reporter', () => {
-    let tmpReporter: WdioCucumberJsJsonReporter = null;
+    let tmpReporter: WdioCucumberJsJsonReporter;
     const logFolder = '.tmp';
     const logFileName = 'logFile.json';
     const logFolderPath = path.join(__dirname, '../../', logFolder);
@@ -137,7 +137,7 @@ describe('reporter', () => {
 
             tmpReporter.report.feature = EMPTY_FEATURE;
 
-            expect(tmpReporter.report.feature.elements.length).toEqual(0);
+            expect(tmpReporter.report.feature.elements?.length).toEqual(0);
 
             tmpReporter.onSuiteStart(SUITE_SCENARIO_STATS);
 
@@ -261,7 +261,7 @@ describe('reporter', () => {
             const files = readdirSync(jsonFolder);
 
             expect(files.length).toEqual(1);
-            expect(files[0].includes(tmpReporter.report.feature.id)).toEqual(true);
+            expect(files[0].includes(String(tmpReporter.report.feature.id))).toEqual(true);
             expect(fileExists(jsonFolder)).toEqual(true);
 
             // Clean up
@@ -330,7 +330,7 @@ describe('reporter', () => {
     });
 
     describe('getStepDataObject', () => {
-        let getFailedMessageSpy;
+        let getFailedMessageSpy: jest.SpyInstance;
 
         beforeEach(() => {
             getFailedMessageSpy = jest.spyOn(tmpReporter.utilsObject, 'getFailedMessage').mockReturnValue({});
@@ -395,14 +395,14 @@ describe('reporter', () => {
                 .mockReturnValue({ foo: 'current-step' });
 
             tmpReporter.report.feature = EMPTY_FEATURE;
-            tmpReporter.report.feature.elements.push(EMPTY_SCENARIO);
+            tmpReporter.report.feature.elements?.push(EMPTY_SCENARIO);
 
-            expect(tmpReporter.report.feature.elements[0].steps.length).toEqual(0);
+            expect(tmpReporter.report.feature.elements?.[0].steps?.length).toEqual(0);
 
             tmpReporter.addStepData({} as HookStatsExtended);
 
-            expect(tmpReporter.report.feature.elements[0].steps.length).toEqual(1);
-            expect(tmpReporter.report.feature.elements[0].steps).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.length).toEqual(1);
+            expect(tmpReporter.report.feature.elements?.[0].steps).toMatchSnapshot();
             expect(getCurrentScenarioSpy).toHaveBeenCalledTimes(1);
             expect(getStepDataObjectSpy).toHaveBeenCalledTimes(1);
         });
@@ -419,16 +419,16 @@ describe('reporter', () => {
                 .mockReturnValue({ foo: 'current-step' });
 
             tmpReporter.report.feature = EMPTY_FEATURE;
-            tmpReporter.report.feature.elements.push(EMPTY_SCENARIO);
-            tmpReporter.report.feature.elements[0].steps.push(pendingStep);
+            tmpReporter.report.feature.elements?.push(EMPTY_SCENARIO);
+            tmpReporter.report.feature.elements?.[0].steps?.push(pendingStep);
 
-            expect(tmpReporter.report.feature.elements[0].steps).toMatchSnapshot();
-            expect(tmpReporter.report.feature.elements[0].steps.length).toEqual(1);
+            expect(tmpReporter.report.feature.elements?.[0].steps).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.length).toEqual(1);
 
             tmpReporter.updateStepStatus({} as TestStatsExtended);
 
-            expect(tmpReporter.report.feature.elements[0].steps).toMatchSnapshot();
-            expect(tmpReporter.report.feature.elements[0].steps.length).toEqual(1);
+            expect(tmpReporter.report.feature.elements?.[0].steps).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.length).toEqual(1);
             expect(getCurrentScenarioSpy).toHaveBeenCalledTimes(1);
             expect(getStepDataObjectSpy).toHaveBeenCalledTimes(1);
             expect(getCurrentStepSpy).toHaveBeenCalledTimes(1);
@@ -474,14 +474,14 @@ describe('reporter', () => {
             const getCurrentStepSpy = jest.spyOn(tmpReporter, 'getCurrentStep').mockReturnValue(pendingStep);
 
             tmpReporter.report.feature = EMPTY_FEATURE;
-            tmpReporter.report.feature.elements.push(EMPTY_SCENARIO);
-            tmpReporter.report.feature.elements[0].steps.push(pendingStep);
+            tmpReporter.report.feature.elements?.push(EMPTY_SCENARIO);
+            tmpReporter.report.feature.elements?.[0].steps?.push(pendingStep);
 
-            expect(tmpReporter.report.feature.elements[0].steps[0]).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.[0]).toMatchSnapshot();
 
             tmpReporter.cucumberJsAttachment({ data: 'data', type: 'text/plain' });
 
-            expect(tmpReporter.report.feature.elements[0].steps[0]).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.[0]).toMatchSnapshot();
             expect(getCurrentStepSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -494,14 +494,14 @@ describe('reporter', () => {
             const getCurrentStepSpy = jest.spyOn(tmpReporter, 'getCurrentStep').mockReturnValue(pendingStep);
 
             tmpReporter.report.feature = EMPTY_FEATURE;
-            tmpReporter.report.feature.elements.push(EMPTY_SCENARIO);
-            tmpReporter.report.feature.elements[0].steps.push(pendingStep);
+            tmpReporter.report.feature.elements?.push(EMPTY_SCENARIO);
+            tmpReporter.report.feature.elements?.[0].steps?.push(pendingStep);
 
-            expect(tmpReporter.report.feature.elements[0].steps[0]).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.[0]).toMatchSnapshot();
 
             tmpReporter.cucumberJsAttachment({ data: 'data-2', type: 'text/plain' });
 
-            expect(tmpReporter.report.feature.elements[0].steps[0]).toMatchSnapshot();
+            expect(tmpReporter.report.feature.elements?.[0].steps?.[0]).toMatchSnapshot();
             expect(getCurrentStepSpy).toHaveBeenCalledTimes(1);
         });
     });

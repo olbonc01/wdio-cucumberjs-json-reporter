@@ -20,7 +20,13 @@ module.exports = {
     rules: {
         'import/no-unresolved': 2,
         'import/no-commonjs': 2,
-        'import/extensions': [1, 'ignorePackages'],
+        'import/extensions': [
+            1, 
+            'ignorePackages',
+            {
+                'ts': 'never'
+            }
+        ],
     },
     settings: {
         'import/parsers': {
@@ -29,7 +35,7 @@ module.exports = {
         'import/resolver': {
             typescript: {
                 alwaysTryTypes: true,
-                project: '/',
+                project: '.',
             },
         },
     },

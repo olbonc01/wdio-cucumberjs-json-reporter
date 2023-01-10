@@ -28,6 +28,7 @@ import WDIOReporter, { HookStats, RunnerStats, SuiteStats, TestStats } from '@wd
 import { CucumberJsJsonReporterInterface } from './types.js';
 import { Metadata } from './metadata.js';
 import Utils from './utils.js';
+import { devNull } from 'os';
 
 const log = logger('wdio-cucumberjs-json-reporter');
 
@@ -317,7 +318,7 @@ class CucumberJsJsonReporter extends WDIOReporter {
      * Get the current scenario
      */
     public getCurrentScenario(): Scenario {
-        return this.report.feature.elements[this.report.feature.elements.length - 1];
+        return this.report.feature.elements ? this.report.feature.elements[this.report.feature.elements.length - 1] : {};
     }
 
     /**
@@ -326,7 +327,7 @@ class CucumberJsJsonReporter extends WDIOReporter {
     public getCurrentStep(): Step {
         const currentScenario = this.getCurrentScenario();
 
-        return currentScenario.steps[currentScenario.steps.length - 1];
+        return currentScenario.steps ? currentScenario.steps[currentScenario.steps.length - 1] : {};
     }
 
     /**
